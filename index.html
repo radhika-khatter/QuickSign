@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickSign</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="options">
+            <div class="textOptions option">
+                <p>Text</p>
+                <input class="colorPicker" type="color">
+            </div>
+            <div class="backgroundOptions option">
+                <p>Background</p>
+                <input class="bgPicker" type="color" value="#ffffff">
+            </div>
+            <div class="fontOptions option">
+                <p>Font</p>
+                <select class="fontPicker">
+                    <option value="">Select Font</option>
+                    <option value="5">5px</option>
+                    <option value="10">10px</option>
+                    <option value="15">15px</option>
+                    <option value="20">20px</option>
+                </select>
+            </div>
+        </div>
+        <canvas class="signSpace" width="650" height="400"></canvas>
+        <div class="btns">
+            <button class="clear" value="clear" onclick="handleClear()">Clear</button>
+            <button class="save" value="Save&Download" onclick="handleSave()">Save & Download</button>
+            <button class="retrieve" value="retrieve" onclick="handleRetrieve()">Retrieve Saved Sign</button>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
