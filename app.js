@@ -7,33 +7,35 @@ const ctx = canvas.getContext("2d");
 // Set default background color
 bgPicker.value = "#ffffff";
 
+function adjustCanvasSize() {
+    const dpr = window.devicePixelRatio || 1;
+
+    // Set canvas size based on its displayed size
+    canvas.width = canvas.offsetWidth * dpr;
+    canvas.height = canvas.offsetHeight * dpr;
+    
+    ctx.scale(dpr, dpr); // Prevents blurry drawing
+    drawBackground();
+}
+
 function drawBackground() {
     ctx.fillStyle = bgPicker.value;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
-drawBackground();
+// Adjust canvas on load & resize
+adjustCanvasSize();
+window.addEventListener("resize", adjustCanvasSize);
 
-// Update background color on change
-bgPicker.addEventListener("change", () => {
-    drawBackground();
-});
+bgPicker.addEventListener("change", drawBackground);
+colorPicker.addEventListener("change", (e) => (ctx.strokeStyle = e.target.value));
+fontPicker.addEventListener("change", (e) => (ctx.lineWidth = e.target.value));
 
-colorPicker.addEventListener("change", (e) => {
-    ctx.strokeStyle = e.target.value;
-});
-
-fontPicker.addEventListener("change", (e) => {
-    ctx.lineWidth = e.target.value;
-});
-
-// Clear canvas
 const handleClear = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawBackground(); // Redraw background after clearing
+    drawBackground();
 };
 
-// Save the drawing
 const handleSave = () => {
     const imageData = canvas.toDataURL();
     localStorage.setItem("myCanvas", imageData);
@@ -44,13 +46,12 @@ const handleSave = () => {
     alert("Image saved and downloaded");
 };
 
-// Retrieve the saved image
 const handleRetrieve = () => {
     const savedImage = localStorage.getItem("myCanvas");
     if (savedImage) {
         const img = new Image();
         img.src = savedImage;
-        img.onload = () => ctx.drawImage(img, 0, 0); // Ensure image is loaded before drawing
+        img.onload = () => ctx.drawImage(img, 0, 0);
     } else {
         alert("No image found");
     }
@@ -61,21 +62,21 @@ let isDrawing = false;
 
 function getPosition(e) {
     let rect = canvas.getBoundingClientRect();
+    let x, y;
+
     if (e.touches) {
-        return {
-            x: e.touches[0].clientX - rect.left,
-            y: e.touches[0].clientY - rect.top
-        };
+        x = (e.touches[0].clientX - rect.left);
+        y = (e.touches[0].clientY - rect.top);
     } else {
-        return {
-            x: e.offsetX,
-            y: e.offsetY
-        };
+        x = (e.clientX - rect.left);
+        y = (e.clientY - rect.top);
     }
+
+    return { x, y };
 }
 
 function startDraw(e) {
-    e.preventDefault();
+    e.preventDefault(); // Prevent scrolling on touch devices
     isDrawing = true;
     ctx.beginPath();
     const { x, y } = getPosition(e);
@@ -102,7 +103,7 @@ canvas.addEventListener("mouseup", stopDraw);
 canvas.addEventListener("mouseleave", stopDraw);
 
 // Touch events (for mobile support)
-canvas.addEventListener("touchstart", startDraw);
-canvas.addEventListener("touchmove", draw);
+canvas.addEventListener("touchstart", startDraw, { passive: false });
+canvas.addEventListener("touchmove", draw, { passive: false });
 canvas.addEventListener("touchend", stopDraw);
 canvas.addEventListener("touchcancel", stopDraw);
