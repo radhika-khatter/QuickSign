@@ -12,6 +12,33 @@ body {
     min-height: 100vh;
     background-color: #006D77;
 }
+.heading {
+    width: 100%;
+    max-width: 900px;
+    background-color: white;
+    color: black;
+    padding: 15px 20px;
+    font-size: 34px;
+    font-weight: bold;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.heading p {
+    margin: 0;
+    font-size: 34px;
+    font-weight: 600;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.heading p span {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 400;
+    text-transform: none;
+    color: black;
+}
 
 .container {
     background-color: #006D77;
