@@ -37,14 +37,44 @@ const handleClear = () => {
 };
 
 const handleSave = () => {
-    const imageData = canvas.toDataURL();
-    localStorage.setItem("myCanvas", imageData);
+    // Create an off-screen 28x28 canvas
+    const smallCanvas = document.createElement("canvas");
+    smallCanvas.width = 28;
+    smallCanvas.height = 28;
+    const smallCtx = smallCanvas.getContext("2d");
+
+    // Draw current canvas onto the small canvas (scaled)
+    smallCtx.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, 28, 28);
+
+    // Get image data
+    const imageData = smallCtx.getImageData(0, 0, 28, 28);
+    const data = imageData.data;
+
+    // Convert to grayscale
+    for (let i = 0; i < data.length; i += 4) {
+        // Average of RGB
+        const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+        data[i] = avg;     // R
+        data[i + 1] = avg; // G
+        data[i + 2] = avg; // B
+        // Alpha (data[i + 3]) remains unchanged
+    }
+
+    smallCtx.putImageData(imageData, 0, 0);
+
+    // Convert to data URL and download
+    const grayImageData = smallCanvas.toDataURL("image/png");
+    localStorage.setItem("myCanvas_28x28_gray", grayImageData);
+
     let link = document.createElement("a");
-    link.href = imageData;
-    link.download = "myCanvas.png";
+    link.href = grayImageData;
+    link.download = "myCanvas_28x28_grayscale.png";
     link.click();
-    alert("Image saved and downloaded");
+
+    alert("Grayscale 28x28 image saved and downloaded");
 };
+
+
 
 const handleRetrieve = () => {
     const savedImage = localStorage.getItem("myCanvas");
